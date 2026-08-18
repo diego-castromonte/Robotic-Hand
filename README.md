@@ -39,3 +39,13 @@ Unlike standard breadboard robotic hand builds, this project utilizes a custom-d
 │   └── Robotic_HAND_schematic.svg
 ├── LICENSE
 └── README.md
+
+Component,Quantity,Connection / Function
+Arduino Uno R3,1,Primary Microcontroller
+Micro Servos (SG90 / MG90S),6,"Pins 2–7 (Pinky, Ring, Middle, Index, Thumb, Palm)"
+28BYJ-48 Stepper Motor,1,"Pins 8, 9, 10, 11 (Base Rotation)"
+ULN2003 Driver Module,1,Connects to ULN2003_J1 & JULNpwr_J2 PCB headers
+Trimmer Potentiometers,3,"Onboard inputs RV1 (A0), RV2 (A1), RV3 (A2)"
+2-Pin Screw Terminal (J1),1,Dedicated external DC supply input for actuators
+Custom Arduino Shield PCB,1,Custom 2-layer power & signal routing PCB
+Pin Headers (Male & Female),Assorted,"Component, servo, and Arduino stacking connections"
