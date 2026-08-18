@@ -98,3 +98,8 @@ Open the Arduino Serial Monitor at **115200 baud** to issue positional commands:
 ## License
 
 Distributed under the MIT License. See `LICENSE` for details.
+
+## Acknowledgements & Credits
+
+* **Hand, Fingers & Forearm CAD:** Derived from the open-source [Humanoid Robotic Hand](https://www.thingiverse.com/thing:2269115) project by **grossrc** on Thingiverse (April 2017).
+* **Custom Engineering & Modifications:** Designed the 3D-printed rotating base assembly, custom servo mounting brackets, firmware control algorithms, and the KiCad Arduino shield PCB.
