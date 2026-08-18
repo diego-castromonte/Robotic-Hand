@@ -1,44 +1,43 @@
 # 6-DOF Robotic Hand with Rotating Base
 
-A fully custom 3D-printed 6 Degree-of-Freedom (DOF) robotic hand powered by an Arduino Uno, custom PCB shield, 6x micro servos, and a 28BYJ-48 stepper motor base assembly.
+A custom 3D-printed 6 Degree-of-Freedom (DOF) robotic hand project controlled by an Arduino Uno, custom PCB shield, micro servos, and a 28BYJ-48 stepper motor base assembly.
 
 ---
 
 ## Overview
 
-Unlike standard breadboard robotic hand builds, this project utilizes a custom-designed **Arduino Uno Shield PCB** to streamline wiring, route dedicated actuator power, and enable dual control via onboard analog potentiometers and direct USB Serial commands.
+This project features an **Arduino Uno Shield PCB** designed in KiCad to route dedicated power to actuators and test multi-servo control alongside stepper base rotation. It supports dual control via onboard potentiometers and USB Serial commands.
+
+*Note: The PCB design has passed KiCad ERC/DRC checks, but physical board fabrication and hardware verification are currently pending.*
 
 ### Key Features
-* **Full-Hand Actuation:** 5 individual finger servos + 1 wrist/palm tilt servo.
-* **Continuous Base Rotation:** Driven by a 28BYJ-48 stepper motor via an integrated ULN2003 driver header.
-* **Custom PCB Shield:** Integrates power distribution terminals, 6x 3-pin servo headers, stepper outputs, and 3 control potentiometers onto a single direct-mount Arduino shield.
-* **Dual-Control Modes:** Manual potentiometer positioning (Base rotation, Palm pitch, Hand close) alongside a 115200 baud UART Serial Command Interface (`1o`/`1c` through `5o`/`5c`, `R`).
+* **Hand Actuation:** Individual finger actuation + wrist/palm tilt servo.
+* **Base Rotation:** Driven by a 28BYJ-48 stepper motor via an integrated ULN2003 driver interface.
+* **Custom PCB Shield:** Integrates external DC power terminals, 3-pin servo headers, stepper outputs, and 3 control potentiometers onto an Arduino shield.
+* **Control Modes:** Manual potentiometer positioning alongside a 115200 baud UART Serial Command Interface (`1o`/`1c` through `5o`/`5c`, `R`).
+
+---
+
+## Known Issues & Current Limitations
+
+This build is an active prototype with several physical and mechanical limitations:
+
+* **Finger Stuttering:** Jitter or stuttering occurs during finger motion due to power distribution noise and line friction.
+* **Servo Mount Placement:** The physical servo mounting bracket is currently a prototype iteration and requires CAD dimensional adjustments for better alignment.
+* **Tendons & Return Mechanism (Single-Line Cable Setup):** Fingers are pulled closed using a fishing line tendon routed to the servo and returned using elastic bands. Because of this tension mechanism, finger movement is not fully independent or rigid.
+* **Future Mechanism Upgrade:** The mechanical setup is planned to be updated to a direct antagonist/pulley assembly (where dynamic 0° to 180° rotation directly pulls the finger closed, and reversing the rotation drives the joint fully open).
 
 ---
 
 ## Repository Structure
 
-```text
-├── CAD/                          # 3D Printable STL Files
-│   ├── All_Fingers.stl
-│   ├── Arm_Base_bottom.stl
-│   ├── Arm_Base_top.stl
-│   ├── Hand_Palm.stl
-│   ├── Stepper_base_atch.stl
-│   ├── Thumb.stl
-│   ├── forarm.stl
-│   ├── forarm_top.stl
-│   ├── servo_mount.stl
-│   └── servo_pull_atch.stl
-├── Firmware/                     # Arduino MCU C++ Code
-│   └── Hand_Code_Final.ino
-├── PCB/                          # KiCad PCB Files & Renders
-│   ├── Hand_gerbers.zip
-│   ├── Robotic_HAND.png
-│   └── Robotic_HAND_top.png
-├── LICENSE
-└── README.md
-```
+* **CAD/** — 3D Printable STL Files (`All_Fingers.stl`, `Hand_Palm.stl`, `servo_mount.stl`, etc.)
+* **Firmware/** — Arduino MCU C++ Code (`Hand_Code_Final.ino`)
+* **PCB/** — KiCad PCB Files, Schematics & Renders (`Hand_gerbers.zip`, `Robotic_HAND.png`, `Robotic_HAND_schematic.svg`)
+* **LICENSE**
+* **README.md**
+
+---
 
 ## Hardware & Bill of Materials 
 
@@ -52,16 +51,18 @@ Unlike standard breadboard robotic hand builds, this project utilizes a custom-d
 | **Trimmer Potentiometers** | 3 | Onboard inputs `RV1` (A0), `RV2` (A1), `RV3` (A2) |
 | **2-Pin Screw Terminal (`J1`)** | 1 | Dedicated external DC supply input for actuators |
 | **Custom Arduino Shield PCB** | 1 | Custom 2-layer power & signal routing PCB |
-| **Pin Headers (Male & Female)** | Assorted | Component, servo, and Arduino stacking connections |
+| **Pin Headers (Male & Female)** | Assorted | Component, servo, and Arduino connections |
+| **Fishing Line (Monofilament)** | Spool | Tension cable for flexion pulling mechanism |
+| **Elastic Bands** | Assorted | Passive return tension for finger extension |
 
 ---
 
 ## Hardware Schematics & PCB Design
 
-The custom shield isolates actuator power (`+5V_MOTOR`) from the logic supply to prevent microcontroller brownouts and reset loops during heavy multi-servo movement.
+The custom shield routes actuator power (`+5V_MOTOR`) separately from the logic supply to avoid microcontroller reset loops during multi-servo movement.
 
 ### Schematic
-![Custom Shield Schematic](./PCB/Robotic_HAND_schematic.svg)
+![Custom Shield Schematic](./PCB/Robotic_HAND_schem.svg)
 
 ### Board Layout & 3D Renders
 | Isometric View | Top View |
@@ -76,7 +77,7 @@ The primary controller code is located at `/Firmware/Hand_Code_Final.ino`.
 
 ### Serial Commands (115200 Baud)
 
-Open the Arduino Serial Monitor at **115200 baud** to issue real-time positional commands:
+Open the Arduino Serial Monitor at **115200 baud** to issue positional commands:
 
 | Command | Action | Command | Action |
 | :--- | :--- | :--- | :--- |
@@ -88,8 +89,12 @@ Open the Arduino Serial Monitor at **115200 baud** to issue real-time positional
 
 ## Getting Started
 
-1. **Assemble Hardware:** Print the components from `/CAD` and press-fit the custom PCB shield onto your Arduino Uno.
-2. **Power Supply:** Connect an external 5V 2A DC power source to terminal block `J1` to isolate motor power from the Arduino logic supply.
+1. **Assemble Hardware:** Print the components from `/CAD` and mount the custom PCB shield onto your Arduino Uno.
+2. **Power Supply:** Connect an external 5V 2A DC power source to terminal block `J1` to power the servos separately.
 3. **Upload Firmware:** Open `/Firmware/Hand_Code_Final.ino` in the Arduino IDE, select **Arduino Uno**, choose your COM port, and click **Upload**.
 
 ---
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for details.
